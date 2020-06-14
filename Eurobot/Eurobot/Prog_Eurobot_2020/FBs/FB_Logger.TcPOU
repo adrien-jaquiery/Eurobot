@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Logger" Id="{57d841dd-c15a-4ba5-b218-f4926adeff25}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger
+VAR_INPUT
+	lrPosX : LREAL;
+	lrPosY : LREAL;
+	lrAngle : LREAL;
+	
+	boMovement : BOOL;			// True if robot is moving
+	lrTargetX : LREAL;
+	lrTargetY : LREAL;
+	lrTargetAngle : LREAL;
+	
+	eAction : e_Type_Action;			// Current mission type
+	
+	input : ARRAY[1..10] OF BOOL;	// Inputs for sensors...
+	
+	RightMotor : AXIS_REF;
+	LeftMotor : AXIS_REF;
+	RightEncoder : AXIS_REF;
+	LeftEncoder : AXIS_REF;
+	
+	boMatchEnCours : BOOL;
+	boReset : bool;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	OpenFile: FB_FileOpen;
+	GetTime: NT_GetTime;
+	currentTime: TIMESTRUCT;
+	path: string;
+	TonMatch: TON;
+	WriteData: FB_FileWrite;
+	logFIle: UINT;
+	logText: STRING(250);
+	header: STRING;
+	boLogData: BOOL;
+	WriteHeader: FB_FileWrite;
+	CloseFile: FB_FileClose;
+	RtStartMatch: R_TRIG;
+	boError: BOOL;
+	errorId: UDINT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*
+  \file     	FB_Logger
+  \brief     	Log match data in a file
+  \author    	Adrien Jaquiéry		<adrienjaquiery13@gmail.com>
+  \version   	1.0
+  \date      	2020-04-24
+  \details
+*)
+IF boReset = TRUE THEN
+	currentTime.wYear := 0;
+	boMatchEnCours := FALSE;
+	logFIle := 0;
+END_IF
+
+RtStartMatch(CLK:= boMatchEnCours, Q=> );
+	GetTime(
+	NETID:= , 
+	START:= boMatchEnCours, 
+	TMOUT:= DEFAULT_ADS_TIMEOUT, 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> , 
+	TIMESTR=> currentTime);
+
+	
+IF currentTime.wYear <> 0 AND logFIle = 0 AND boMatchEnCours THEN
+	path := CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(WORD_TO_STRING(currentTime.wYear),WORD_TO_STRING(currentTime.wMonth)),WORD_TO_STRING(currentTime.wDay)),WORD_TO_STRING(currentTime.wHour)),WORD_TO_STRING(currentTime.wMinute)),WORD_TO_STRING(currentTime.wSecond));
+
+	OpenFile(
+		sNetId:= '', 
+		sPathName:= CONCAT(path,'.txt'),
+		nMode:= FOPEN_MODEWRITE OR FOPEN_MODEPLUS OR FOPEN_MODETEXT, 
+		ePath:= PATH_GENERIC, 
+		bExecute:= boMatchEnCours, 
+		tTimeout:= T#3S, 
+		bBusy=> , 
+		bError=> boError, 
+		nErrId=> errorId, 
+		hFile=> logFIle);
+END_IF
+
+TonMatch(IN:= boMatchEnCours, PT:= T#100S, Q=> , ET=> );
+
+IF(logFile <> 0 AND boMatchEnCours and not OpenFile.bBusy) THEN
+	logText:= CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(TIME_TO_STRING(TonMatch.ET),' posX: '),LREAL_TO_STRING(lrPosX)),' posY: '),LREAL_TO_STRING(lrPosY)),' angle: '),LREAL_TO_STRING(lrAngle));
+	logText:= CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(logText,' Mvm: '),BOOL_TO_STRING(boMovement)),' TargetX: '),LREAL_TO_STRING(lrTargetX)),' TargetY: '),LREAL_TO_STRING(lrTargetY)),' TargetAngle: '),LREAL_TO_STRING(lrTargetAngle));
+	logText:= CONCAT(CONCAT(logText,' Mission: '),INT_TO_STRING(eAction));
+	logText:= CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(logText,' I1: '),BOOL_TO_STRING(input[1])),' I2: '),BOOL_TO_STRING(input[2])),' I3: '),BOOL_TO_STRING(input[3])),' I4: '),BOOL_TO_STRING(input[4])),' I5: '),BOOL_TO_STRING(input[5])),' I6: '),BOOL_TO_STRING(input[6])),' I7: '),BOOL_TO_STRING(input[7])),' I8: '),BOOL_TO_STRING(input[8])),' I9: '),BOOL_TO_STRING(input[9])),' I10: '),BOOL_TO_STRING(input[10]));
+	logText:= CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(logText,' rAxErr: '),UDINT_TO_STRING(RightMotor.Status.ErrorID)),' lAxErr: '),UDINT_TO_STRING(leftMotor.Status.ErrorID)),' rIncErr: '),UDINT_TO_STRING(Rightencoder.Status.ErrorID)),' lIncErr: '),UDINT_TO_STRING(Leftencoder.Status.ErrorID));
+	logText:= CONCAT(logText,'\n');
+	
+	WriteData(
+	sNetId:= '', 
+	hFile:= logFIle, 
+	pWriteBuff:= ADR(logText), 
+	cbWriteLen:= SIZEOF(logText), 
+	bExecute:= NOT boLogData, 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> boError, 
+	nErrId=> errorId, 
+	cbWrite=> );
+		
+END_IF
+
+IF (logFIle <> 0 AND NOT boMatchEnCours) OR CloseFile.bBusy THEN
+	CloseFile(
+	sNetId:= '', 
+	hFile:= logFile, 
+	bExecute:= NOT boMatchEnCours AND logFile <> 0, 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> boError, 
+	nErrId=> errorId);	
+END_IF	
+
+	
+	]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Logger">
+      <LineId Id="708" Count="7" />
+      <LineId Id="1141" Count="0" />
+      <LineId Id="1144" Count="0" />
+      <LineId Id="1146" Count="1" />
+      <LineId Id="1145" Count="0" />
+      <LineId Id="1143" Count="0" />
+      <LineId Id="875" Count="0" />
+      <LineId Id="1092" Count="6" />
+      <LineId Id="1090" Count="1" />
+      <LineId Id="831" Count="0" />
+      <LineId Id="724" Count="0" />
+      <LineId Id="830" Count="0" />
+      <LineId Id="726" Count="12" />
+      <LineId Id="905" Count="0" />
+      <LineId Id="739" Count="2" />
+      <LineId Id="743" Count="2" />
+      <LineId Id="1200" Count="2" />
+      <LineId Id="1190" Count="0" />
+      <LineId Id="747" Count="11" />
+      <LineId Id="877" Count="0" />
+      <LineId Id="1086" Count="0" />
+      <LineId Id="1085" Count="0" />
+      <LineId Id="1026" Count="0" />
+      <LineId Id="1029" Count="5" />
+      <LineId Id="1027" Count="0" />
+      <LineId Id="927" Count="0" />
+      <LineId Id="916" Count="0" />
+      <LineId Id="939" Count="0" />
+      <LineId Id="781" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

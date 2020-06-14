@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="arrActions" Id="{b7d130e0-28ae-4d6f-aab5-2a05d6c0dd24}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION arrActions : ARRAY[0..10] OF st_Action;
+VAR_INPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//	Set up all actions here
+
+// Action 1
+arrActions[1].strNomAction := 'Action 1';		// Name of action
+arrActions[1].iAction := eDeplacement;			// Type of action
+arrActions[1].iPrioriteAction := 1;				// Priority of action
+arrActions[1].iNbXAction := 1;					// Nbr of execution
+arrActions[1].iTypePrerequis := 0;				// Type of prerequisite
+arrActions[1].ariPrerequis[1] := eNULL;			// Prerequisite actions
+arrActions[1].lrPosX := 0;						// Position of the action
+arrActions[1].lrPosY := 0;						// If x & y == 0
+arrActions[1].lrAngle := 0;						// No deplacement is needed
+arrActions[1].intPtAction := 0;					// Nbr of points earned
+	
+// Action 2	
+arrActions[2].strNomAction := 'Action 2';		// Name of action
+arrActions[2].iAction := eDeplacement;			// Type of action
+arrActions[2].iPrioriteAction := 1;				// Priority of action
+arrActions[2].iNbXAction := 1;					// Nbr of execution
+arrActions[2].iTypePrerequis := 0;				// Type of prerequisite
+arrActions[2].ariPrerequis[1] := eNULL;			// Prerequisite actions
+arrActions[2].lrPosX := 0;						// Position of the action
+arrActions[2].lrPosY := 0;						// If x & y == 0
+arrActions[2].lrAngle := 0;						// No deplacement is needed
+arrActions[2].intPtAction := 0;					// Nbr of points earned
+// Continue for each action
+RETURN;]]></ST>
+    </Implementation>
+    <LineIds Name="arrActions">
+      <LineId Id="42" Count="24" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="36" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

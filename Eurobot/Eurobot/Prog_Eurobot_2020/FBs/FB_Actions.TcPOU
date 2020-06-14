@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Actions" Id="{de27ada6-ae50-4df9-b6fb-a49d3a5e0551}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Actions
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	arrActions: ARRAY[0..10] OF st_Action;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//	Set up all actions here
+
+// Action 1
+arrActions[1].strNomAction := 'Action 1';		// Name of action
+arrActions[1].iAction := eDeplacement;			// Type of action
+arrActions[1].iPrioriteAction := 1;				// Priority of action
+arrActions[1].iNbXAction := 1;					// Nbr of execution
+arrActions[1].iTypePrerequis := 0;				// Type of prerequisite
+arrActions[1].ariPrerequis[1] := eNULL;			// Prerequisite actions
+arrActions[1].lrPosX := 0;						// Position of the action
+arrActions[1].lrPosY := 0;						// If x & y == 0
+arrActions[1].lrAngle := 0;						// No deplacement is needed
+arrActions[1].intPtAction := 0;					// Nbr of points earned
+	
+// Action 2	
+arrActions[2].strNomAction := 'Action 2';		// Name of action
+arrActions[2].iAction := eDeplacement;			// Type of action
+arrActions[2].iPrioriteAction := 1;				// Priority of action
+arrActions[2].iNbXAction := 1;					// Nbr of execution
+arrActions[2].iTypePrerequis := 0;				// Type of prerequisite
+arrActions[2].ariPrerequis[1] := eNULL;			// Prerequisite actions
+arrActions[2].lrPosX := 0;						// Position of the action
+arrActions[2].lrPosY := 0;						// If x & y == 0
+arrActions[2].lrAngle := 0;						// No deplacement is needed
+arrActions[2].intPtAction := 0;					// Nbr of points earned
+
+// Continue for each action]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Actions">
+      <LineId Id="9" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="29" Count="2" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="32" Count="8" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="15" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

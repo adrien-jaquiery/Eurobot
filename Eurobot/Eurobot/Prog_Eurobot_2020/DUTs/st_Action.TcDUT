@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <DUT Name="st_Action" Id="{0580c844-9741-4f34-8f26-c9d61fe3027d}">
+    <Declaration><![CDATA[(*
+  \file     	st_Action
+  \brief     	action struct
+  \author    	Loïc Nicoud
+  \modif		Adrien Jaquiéry		<adrienjaquiery13@gmail.com>	
+  \version   	1.0
+  \date      	2020-04-24
+  \details
+*)
+TYPE st_Action :
+STRUCT
+	//faire un tableau de cette structure, de [0..?], la case 0 donne l'état initial du robot ( position )
+	
+	strNomAction : STRING;	//Nom de l'action
+	iAction : INT;	//EnumAction (type de l'action à effectuer)
+	iPrioriteAction : INT;	//0: ne pas faire, 1 priorité min, plus grand, plus priritaire
+	iNbXAction : INT;	//Nombre de fois que l'action peut être faite 0<x<=10 , 10 -> infini	
+	iNbActionFaite : INT; //Nombre de fois que l'action à été faite
+	
+	iTypePrerequis : INT; //0: None, 1: all, 2: min one, 3: min half
+	ariPrerequis : ARRAY[1..15] OF INT;	//num tableau action des action prerequises. 0 dans une case -> case ignorée
+	
+	boActionDone : BOOL;
+	boActionAttente : BOOL;	//Si l'action à déja été tentée mais echouée
+	
+	boDeplacement : BOOL; // True if the action need a displacement
+	boPathfinding : bool;
+	//Position of the action (if specific position needed)
+	lrPosX : LREAL;
+	lrPosY : LREAL;
+	lrAngle : LREAL;
+	
+	intPtAction : INT;
+	
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

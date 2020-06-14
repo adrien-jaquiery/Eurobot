@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Calcul_Position_V4" Id="{02018b14-d3ab-4111-b46b-8646e09a38fe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Calcul_Position_V4
+VAR_INPUT
+
+	lrPosCodeurDroite	: LREAL;
+	lrPosCodeurGauche	: LREAL;
+	lrEntraxeCodeur		: LREAL;
+
+	boSetPosInitiale	: BOOL;
+	lrPosInitialeX		: LREAL;
+	lrPosInitialeY		: LREAL;
+	lrPosInitialeAngle	: LREAL;	// en [°], le 0° vers Y+, sens horaire
+
+END_VAR
+VAR_OUTPUT
+	
+	lrPosActuelleX		: LREAL;
+	lrPosActuelleY		: LREAL;
+	lrPosActuelleAngle	: LREAL;
+
+END_VAR
+VAR
+	
+	lrPosCodeurDroiteDernierCycle	: LREAL;
+	lrPosCodeurGaucheDernierCycle	: LREAL;
+	lrPosActuelleAngleRadian		: LREAL;	
+
+	lrDeltaCodeurDroite		: LREAL;
+	lrDeltaCodeurGauche		: LREAL;
+	
+	lrDeltaDistance		: LREAL;
+	lrDeltaAngle		: lreal;
+	
+END_VAR
+VAR CONSTANT
+	
+	lrValeurPi	: LREAL := 3.1415926535897932384626433832795;
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Gestion set pos initiale
+
+IF boSetPosInitiale THEN
+	
+	lrPosActuelleX := lrPosInitialeX;
+	lrPosActuelleY := lrPosInitialeY;
+	lrPosActuelleAngle := lrPosInitialeAngle;
+	lrPosActuelleAngleRadian := lrPosInitialeAngle * ( lrValeurPi / 180 );
+	
+	lrPosCodeurDroiteDernierCycle := lrPosCodeurDroite;
+	lrPosCodeurGaucheDernierCycle := lrPosCodeurGauche;
+
+END_IF
+
+//Calcul des deltas codeurs
+
+lrDeltaCodeurDroite := lrPosCodeurDroite - lrPosCodeurDroiteDernierCycle;
+lrDeltaCodeurGauche := lrPosCodeurGauche - lrPosCodeurGaucheDernierCycle;
+
+//Calcul distance moyenne et angle
+
+lrDeltaDistance	:= ( lrDeltaCodeurDroite + lrDeltaCodeurGauche ) / 2;
+lrDeltaAngle	:= ATAN ( ( lrDeltaCodeurGauche - lrDeltaCodeurDroite ) / lrEntraxeCodeur );
+
+//Calcul pos du robot
+
+lrPosActuelleX := lrPosActuelleX + ( lrDeltaDistance * SIN ( lrPosActuelleAngleRadian ) );
+lrPosActuelleY := lrPosActuelleY + ( lrDeltaDistance * COS ( lrPosActuelleAngleRadian ) );
+
+lrPosActuelleAngleRadian := lrPosActuelleAngleRadian + lrDeltaAngle;
+
+IF lrPosActuelleAngleRadian < 0 THEN
+	
+	lrPosActuelleAngleRadian := lrPosActuelleAngleRadian + ( 2.0 * lrValeurPi );
+	
+ELSIF lrPosActuelleAngleRadian >= ( 2 * lrValeurPi ) THEN
+	
+	lrPosActuelleAngleRadian := lrPosActuelleAngleRadian - ( 2.0 * lrValeurPi );
+
+END_IF
+
+lrPosActuelleAngle := lrPosActuelleAngleRadian * ( 180 / lrValeurPi );
+
+lrPosCodeurDroiteDernierCycle := lrPosCodeurDroite;
+lrPosCodeurGaucheDernierCycle := lrPosCodeurGauche;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Calcul_Position_V4">
+      <LineId Id="9" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="79" Count="2" />
+      <LineId Id="84" Count="4" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="77" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

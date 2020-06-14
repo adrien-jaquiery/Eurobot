@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <GVL Name="IO" Id="{5fe1b9ed-fe32-442e-a342-568e1cc5b11a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	ibStart AT %I*: BOOL;
+	ibHome AT %I*: BOOL;
+	ibReset AT %I*: BOOL;
+	ibAuNc AT %I*: BOOL;
+	ibReedStart AT %I*: BOOL;
+	
+	qbLed1 AT %Q*: BOOL;
+	qbLed2 AT %Q*: BOOL;
+	qbLed3 AT %Q*: BOOL;
+	qbLed4 AT %Q*: BOOL;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

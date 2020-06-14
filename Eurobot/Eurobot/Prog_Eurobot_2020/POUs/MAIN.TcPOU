@@ -1,13 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.0.36">
-  <POU Name="MAIN" Id="{ac90a53a-8f36-45f0-b80f-2740d1b755af}">
-    <Declaration><![CDATA[PROGRAM MAIN
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="MAIN" Id="{ec91a510-c593-4304-b60a-73ee35f47e18}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+  \file     	MAIN
+  \brief     	main program
+  \author    	Adrien Jaquiéry		<adrienjaquiery13@gmail.com>
+  \version   	1.0
+  \date      	2020-04-24
+  \details
+*)
+PROGRAM MAIN
 VAR
+	Logger: FB_LOGGER;
+	Beacon: FB_Beacon;
+	CalculPosition: FB_Calcul_Position_V4;
+	
+	RtStart: R_TRIG;
+	FtStart: F_TRIG;
+	FtReset: F_TRIG;
+	RtReset: R_TRIG;
+	FtHome: F_TRIG;
+	RtHome: R_TRIG;
+	actions : ARRAY[0..10] OF st_Action;
 END_VAR
-]]>
-    </Declaration>
+]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[FtStart(CLK:= IO.ibStart, Q=> );
+RtStart(CLK:= IO.ibStart, Q=> );
+FtReset(CLK:= IO.ibReset, Q=> );
+RtReset(CLK:= IO.ibReset, Q=> );
+FtHome(CLK:= IO.ibHome, Q=> );
+RtHome(CLK:= IO.ibHome, Q=> );
+
+IF RtReset.Q THEN
+	Init();
+END_IF
+
+actions := arrActions();
+
+
+Logger(
+	lrPosX:= Motors.lrPosX, 
+	lrPosY:= Motors.lrPosY, 
+	lrAngle:= Motors.lrAngle, 
+	boMovement:= , 
+	lrTargetX:= , 
+	lrTargetY:= , 
+	lrTargetAngle:= , 
+	RightMotor:= , 
+	LeftMotor:= , 
+	RightEncoder:= , 
+	LeftEncoder:= , 
+	input:= , 
+	boMatchEnCours:= IO.ibStart);
+	
+Beacon(lrDetectionAngle:= , lrMinDistance:= , boFrontDetection:= , boObstacle=> );
+(*
+CalculPosition(
+	lrPosCodeurDroite:= , 
+	lrPosCodeurGauche:= , 
+	lrEntraxeCodeur:= , 
+	boSetPosInitiale:= , 
+	lrPosInitialeX:= , 
+	lrPosInitialeY:= , 
+	lrPosInitialeAngle:= , 
+	lrPosActuelleX=> Motors.lrPosX, 
+	lrPosActuelleY=> motors.lrPosY, 
+	lrPosActuelleAngle=> motors.lrAngle);
+	*)]]></ST>
     </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="68" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="78" Count="3" />
+      <LineId Id="83" Count="2" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="7" Count="7" />
+      <LineId Id="17" Count="4" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="53" Count="9" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="108" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

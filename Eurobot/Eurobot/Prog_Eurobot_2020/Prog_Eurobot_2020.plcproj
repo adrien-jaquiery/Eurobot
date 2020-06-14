@@ -15,19 +15,71 @@
     <LibraryReferences>{cb9c27f1-0950-49ab-9bd6-3092e7defb05}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DUTs\e_Displacement.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\e_Type_Action.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\st_Action.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\arrActions.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_Actions.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_Beacon.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_Calcul_Position_V4.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_ChooseAction.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_Logger.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_MoveBezier.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_MoveLinear.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_OdometryOpponents.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FBs\FB_PathFinding.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GVLs\IO.TcGVL">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GVLs\Motors.TcGVL">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Init.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Test.TcPOU">
+    <Compile Include="POUs\Mobility.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Prg_Match.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="FBs" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -48,8 +100,8 @@
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-  <Data>
-    <o xml:space="preserve" t="OptionKey">
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
@@ -70,13 +122,13 @@
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-  </Data>
-  <TypeList>
-    <Type n="Hashtable">System.Collections.Hashtable</Type>
-    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-    <Type n="String">System.String</Type>
-  </TypeList>
-</XmlArchive>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

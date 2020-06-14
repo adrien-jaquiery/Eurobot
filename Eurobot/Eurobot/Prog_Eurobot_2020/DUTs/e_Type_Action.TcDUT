@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <DUT Name="e_Type_Action" Id="{22987718-e7de-4864-bca7-16625882b12e}">
+    <Declaration><![CDATA[(*
+  \file     	e_Type_Action
+  \brief     	enum action types
+  \author    	Loïc Nicoud
+  \modif		Adrien Jaquiéry		<adrienjaquiery13@gmail.com>	
+  \version   	1.0
+  \date      	2020-04-24
+  \details
+*)
+TYPE e_Type_Action :
+(
+	eNull, eDeplacement, eWait, ePushShip, eCheckCompass
+);
+END_TYPE
+
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

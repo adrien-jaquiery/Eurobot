@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Beacon" Id="{8dfc02fd-6244-4929-816b-4da729158da2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Beacon
+VAR_INPUT
+	lrDetectionAngle: LREAL;		// Scaning cone of the beacon. [°](Angle from the front of the robot)
+	lrMinDistance: LREAL;		// Minimal distance of detection [mm]
+	boFrontDetection: BOOL;		// True = front detection, False = back detection
+END_VAR
+VAR_OUTPUT
+	boObstacle: BOOL;
+END_VAR
+VAR
+	timeBeaconUpdated: TIME := T#500MS;
+	IuliBaliseC AT%I* : ULINT;
+	IuliBaliseSigPos AT%I* : ULINT;
+	IuliBaliseSigNeg AT%I* : ULINT;
+	
+	uliBaliseOldC : ULINT;
+	uliDifference : ULINT;
+	lrAngleDetected : LREAL;
+	IuliBaliseSigPosOld: ULINT;
+	IuliBaliseSigNegOld: ULINT;
+	lrAngleDist: LREAL;
+	lrDistance : LREAL;
+	lrAngleDistRad : lreal;
+	TofBaliseAJour: TOF;
+	BoBaliseAJour: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF IuliBaliseC <> uliBaliseOldC THEN
+	uliDifference := IuliBaliseC - uliBaliseOldC;
+	uliBaliseOldC := IuliBaliseC;
+END_IF
+
+IF IuliBaliseSigPos <> IuliBaliseSigPosOld THEN
+	lrAngleDetected := (((ULINT_TO_LREAL(IuliBaliseSigPos) - ULINT_TO_LREAL(IuliBaliseC)) / ULINT_TO_LREAL(uliDifference))*360.0) + 70.0;
+	IF lrAngleDetected > 360.0 THEN
+		lrAngleDetected := lrAngleDetected - 360.0;
+	ELSIF lrAngleDetected < 0 THEN
+		lrAngleDetected := 360.0 + lrAngleDetected;
+	END_IF
+	IuliBaliseSigPosOld := IuliBaliseSigPos;
+END_IF
+
+IF IuliBaliseSigNeg <> IuliBaliseSigNegOld THEN
+	lrAngleDist := ((ULINT_TO_LREAL(IuliBaliseSigNeg)- ULINT_TO_LREAL(IuliBaliseSigPos))/ ULINT_TO_LREAL(uliDifference))*360.0;
+	lrAngleDistRad := lrAngleDist * PI / 180.0;
+	lrDistance := 32 / SIN(lrAngleDistRad / 2.0);
+	TofBaliseAJour.IN := TRUE;
+	IuliBaliseSigNegOld := IuliBaliseSigNeg;
+ELSE
+	TofBaliseAJour.IN := FALSE;
+END_IF
+
+TofBaliseAJour(IN:= , PT:= timeBeaconUpdated, Q=> BoBaliseAJour, ET=> );
+IF BoBaliseAJour = TRUE AND lrDistance <= lrMinDistance AND ((boFrontDetection = TRUE AND (lrdetectionAngle / 2 > lrAngleDetected OR 360 - lrdetectionAngle / 2 < lrAngleDetected)) OR (boFrontDetection = FALSE AND (lrAngleDetected <= 180 AND lrAngleDetected >= 180 - lrdetectionAngle / 2 OR lrAngleDetected > 180 AND lrAngleDetected <= 180 + lrdetectionAngle / 2))) THEN
+	boObstacle := TRUE;
+ELSE
+	boObstacle := FALSE;
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Beacon">
+      <LineId Id="170" Count="11" />
+      <LineId Id="183" Count="17" />
+      <LineId Id="61" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

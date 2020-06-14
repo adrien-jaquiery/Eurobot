@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
-  <POU Name="Test" Id="{05a7abdc-a21b-48aa-9907-14c130b4fdc8}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM Test
+  <POU Name="Init" Id="{9544ebca-da74-4df8-a5ce-83c5c3b96401}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Init
 VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[// Write your init sequence here]]></ST>
     </Implementation>
-    <LineIds Name="Test">
+    <LineIds Name="Init">
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
